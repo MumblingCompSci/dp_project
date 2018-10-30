@@ -14,6 +14,7 @@ public class Main {
     private static Node[][] minCosts;
     private static String[] cityNames;
     private static int[] cityPath;
+    private static int finalMinCost;
 
     public static void main(String[] args) {
         //TODO: import city data
@@ -69,7 +70,21 @@ public class Main {
     }
 
     private static void generateTraceBack(Node[][] minCosts, int[] cityPath) {
-        //TODO: generate path
+    	finalMinCost = Integer.MAX_VALUE;
+    	int nextParentCity = -1;
+    	for(int i = 0; i < numCities; i++) {
+    		if(minCosts[i][numMonths-1].minCost < finalMinCost) {
+    			finalMinCost = minCosts[i][numMonths-1].minCost; 
+    			nextParentCity = i;
+    		}
+    	}
+    	
+    	for(int j = numMonths - 1; j > 0; j--) {
+    		cityPath[j] = nextParentCity;
+    		nextParentCity = minCosts[nextParentCity][j-1].parentCity;
+    	}
+    	
+    	cityPath[0] = nextParentCity;
     }
 
     private static void importCityData(String txtFile) {
@@ -130,7 +145,12 @@ public class Main {
     }
 
     private static void printPath(int[] cityPath, String[] cityNames) {
-        //TODO: print the cities
+    	String path = "";
+    	for(int city : cityPath) {
+    		path = path + cityNames[city] + " ";
+    	}
+    	
+    	System.out.println(path);
     }
 
     private class Node {
