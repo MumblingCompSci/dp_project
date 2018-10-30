@@ -16,7 +16,7 @@ public class Main {
     public static void main(String[] args) {
         //TODO: import city data
         // initializes numCities, numMonths, cityNames, and opsCosts from input file
-        importCityData("/home/quintero/Algorithms/dp_project/src/opsCost.txt", opsCosts, numCities, numMonths, cityNames);
+        importCityData("/home/quintero/Algorithms/dp_project/src/opsCost.txt");
 
         //initialize the things
         relocCosts = new int[numCities][numCities];
@@ -70,42 +70,60 @@ public class Main {
         //TODO: generate path
     }
 
-    private static void importCityData(String txtFile, int[][] opsCosts, int numCities, int numMonths, String[] cityNames) {
+    private static void importCityData(String txtFile) {
         try {
             Scanner scanner = new Scanner(new File(txtFile));
-
             scanner.useDelimiter("\\s+|\\n");
 
+            // read in the values
             numCities = Integer.parseInt(scanner.next());
             numMonths = Integer.parseInt(scanner.next());
 
+            // set up the storage data structures
             opsCosts = new int[numMonths][numCities];
             cityNames = new String[numCities];
 
             for (int i = 0; i < numCities; i++) {
+                // get the name for city i
                 cityNames[i] = scanner.next();
 
                 for (int j = 0; j < numMonths; j++) {
-                    
+                    // load the operation costs for city i in month j
+                    opsCosts[j][i] = Integer.parseInt(scanner.next());
+                }
+            }
+            System.out.println("City Data Imported...");
+        } catch (FileNotFoundException fe) {
+            System.err.println(fe.getMessage());
+            System.err.println(fe.getCause());
+        }
+    }
+
+    private static void importRelocCosts(String txtFile, int numCities, int[][] relocCosts) {
+        //TODO: import relocation costs
+        try {
+            Scanner scanner = new Scanner(new File(txtFile));
+
+            scanner.useDelimiter("\\s+|\\n");
+            int thisNumCities;
+
+            thisNumCities = Integer.parseInt(scanner.next());
+            if (thisNumCities != numCities) { // checks input validity
+                System.err.println("numCities does not match!");
+            }
+
+            relocCosts = new int[numCities][numCities];
+
+            for (int i = 0; i < numCities; i++) {
+
+                for (int j = i; j <= numCities; j++) {
+                    relocCosts[i][j] = Integer.parseInt(scanner.next());
                 }
             }
         } catch (FileNotFoundException fe) {
             System.err.println(fe.getMessage());
             System.err.println(fe.getCause());
         }
-
-        //TODO: import numCities
-
-
-        //TODO: import numMonths
-        //TODO: import city names
-
-        //TODO: import operational costs
-
-    }
-
-    private static void importRelocCosts(String txtFile, int[][] relocCosts) {
-        //TODO: import relocation costs
     }
 
     private static void printPath(int[] cityPath, String[] cityNames) {
