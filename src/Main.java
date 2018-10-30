@@ -17,7 +17,7 @@ public class Main {
     private static int finalMinCost;
 
     public static void main(String[] args) {
-        //TODO: import city data
+        // import city data
         // initializes numCities, numMonths, cityNames, and opsCosts from input file
         importCityData("src/opsCost.txt");
 
@@ -26,45 +26,52 @@ public class Main {
         minCosts = new Node[numMonths][numCities];
         cityPath = new int[numMonths];
 
-        //TODO: import relocation data
-//        importRelocCosts("someString........", relocCosts);
+        // import relocation data
+        importRelocCosts("src/relocCost.txt", numCities);
 
-        //TODO: calculate costs table
-//        populateMinCosts();
+        // calculate costs table
+        populateMinCosts();
 
-        //TODO: generate "city path"
-//        generateTraceBack(minCosts, cityPath);
+        // generate "city path"
+        generateTraceBack(minCosts, cityPath);
 
-        //TODO: print the cities
-//        printPath(cityPath, cityNames);
+        // print the cities
+        printPath(cityPath, cityNames);
     }
 
     private static void populateMinCosts() {
-        //TODO: calculate table data
-        //TODO: double check because Garrett can't read
+
         int minCost;
         int opsCost;
         int relocCost;
         int prevCost;
         int sumCost;
         int prevCity = 0;
-        for (int i = 0; i < numMonths; ++i) {
-            // loop over the months
-            for (int j = 0; j < numCities; ++j) {
-                // loop over cities to find the min cost to oeprate in that city in that month
+
+        for (int i = 0; i < numCities; i++) {
+            Node node = new Node(opsCosts[0][i], -1);
+            minCosts[0][i] = node;
+        }
+
+        // loop over the months
+        for (int i = 1; i < numMonths; i++) {
+            // loop over the cities 
+            for (int j = 0; j < numCities; j++) {
+                // loop over cities to find the min cost to operate in that city in that month
                 minCost = Integer.MAX_VALUE;
                 for(int k = 0; k < numCities; k++){
-                    opsCost = opsCosts[j][i];
+                    opsCost = opsCosts[i][j];
                     relocCost = relocCosts[j][k];
-                    prevCost = minCosts[k][i-1].minCost;
+                    prevCost = minCosts[i-1][k].minCost;
                     sumCost = opsCost + relocCost + prevCost;
                     if(sumCost < minCost){
                         minCost = sumCost;
                         prevCity = k;
                     }
                 }
-                minCosts[j][i].minCost = minCost;
-                minCosts[j][i].parentCity = prevCity;
+                Node node = new Node(minCost, prevCity);
+                minCosts[j][i] = node;
+
             }
         }
     }
@@ -117,10 +124,11 @@ public class Main {
         }
     }
 
-    private static void importRelocCosts(String txtFile, int numCities, int[][] relocCosts) {
+    private static void importRelocCosts(String txtFile, int numCities) {
         //TODO: import relocation costs
         try {
-            Scanner scanner = new Scanner(new File(txtFile));
+            Path path = Paths.get(txtFile);
+            Scanner scanner = new Scanner(new File(path.toUri()));
 
             scanner.useDelimiter("\\s+|\\n");
             int thisNumCities;
@@ -134,8 +142,8 @@ public class Main {
 
             for (int i = 0; i < numCities; i++) {
 
-                for (int j = i; j <= numCities; j++) {
-                    relocCosts[i][j] = Integer.parseInt(scanner.next());
+                for (int j = 0; j < numCities; j++) {
+                    relocCosts[j][i] = Integer.parseInt(scanner.next());
                 }
             }
         } catch (FileNotFoundException fe) {
@@ -153,7 +161,7 @@ public class Main {
     	System.out.println(path);
     }
 
-    private class Node {
+    private static class Node {
         public Node(int minCost, int cityIndex) {
             this.minCost = minCost;
             this.parentCity = cityIndex;
