@@ -1,5 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 public class Main {
@@ -16,7 +18,7 @@ public class Main {
     public static void main(String[] args) {
         //TODO: import city data
         // initializes numCities, numMonths, cityNames, and opsCosts from input file
-        importCityData("/home/quintero/Algorithms/dp_project/src/opsCost.txt");
+        importCityData("src/opsCost.txt");
 
         //initialize the things
         relocCosts = new int[numCities][numCities];
@@ -72,7 +74,8 @@ public class Main {
 
     private static void importCityData(String txtFile) {
         try {
-            Scanner scanner = new Scanner(new File(txtFile));
+            Path path = Paths.get(txtFile);
+            Scanner scanner = new Scanner(new File(path.toUri()));
             scanner.useDelimiter("\\s+|\\n");
 
             // read in the values
