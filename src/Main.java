@@ -1,3 +1,7 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
 public class Main {
 
     private static int numCities;
@@ -12,7 +16,7 @@ public class Main {
     public static void main(String[] args) {
         //TODO: import city data
         // initializes numCities, numMonths, cityNames, and opsCosts from input file
-        importCityData("someString.....", opsCosts, numCities, numMonths, cityNames);
+        importCityData("/home/quintero/Algorithms/dp_project/src/opsCost.txt", opsCosts, numCities, numMonths, cityNames);
 
         //initialize the things
         relocCosts = new int[numCities][numCities];
@@ -20,16 +24,16 @@ public class Main {
         cityPath = new int[numMonths];
 
         //TODO: import relocation data
-        importRelocCosts("someString........", relocCosts);
+//        importRelocCosts("someString........", relocCosts);
 
         //TODO: calculate costs table
-        populateMinCosts();
+//        populateMinCosts();
 
         //TODO: generate "city path"
-        generateTraceBack(minCosts, cityPath);
+//        generateTraceBack(minCosts, cityPath);
 
         //TODO: print the cities
-        printPath(cityPath, cityNames);
+//        printPath(cityPath, cityNames);
     }
 
     private static void populateMinCosts() {
@@ -67,7 +71,32 @@ public class Main {
     }
 
     private static void importCityData(String txtFile, int[][] opsCosts, int numCities, int numMonths, String[] cityNames) {
+        try {
+            Scanner scanner = new Scanner(new File(txtFile));
+
+            scanner.useDelimiter("\\s+|\\n");
+
+            numCities = Integer.parseInt(scanner.next());
+            numMonths = Integer.parseInt(scanner.next());
+
+            opsCosts = new int[numMonths][numCities];
+            cityNames = new String[numCities];
+
+            for (int i = 0; i < numCities; i++) {
+                cityNames[i] = scanner.next();
+
+                for (int j = 0; j < numMonths; j++) {
+                    
+                }
+            }
+        } catch (FileNotFoundException fe) {
+            System.err.println(fe.getMessage());
+            System.err.println(fe.getCause());
+        }
+
         //TODO: import numCities
+
+
         //TODO: import numMonths
         //TODO: import city names
 
