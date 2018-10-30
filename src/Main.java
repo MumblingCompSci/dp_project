@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.Scanner;
 
 public class Main {
@@ -142,7 +143,12 @@ public class Main {
     }
 
     private static void printPath(int[] cityPath, String[] cityNames) {
-        //TODO: print the cities
+    	String path = "";
+    	for(int city : cityPath) {
+    		path = path + cityNames[city] + " ";
+    	}
+    	
+    	System.out.println(path);
     }
 
     private class Node {
