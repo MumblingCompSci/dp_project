@@ -23,7 +23,7 @@ public class Main {
 
         //initialize the things
         relocCosts = new int[numCities][numCities];
-        minCosts = new Node[numMonths][numCities];
+        minCosts = new Node[numCities][numMonths];
         cityPath = new int[numMonths];
 
         // import relocation data
@@ -49,8 +49,8 @@ public class Main {
         int prevCity = 0;
 
         for (int i = 0; i < numCities; i++) {
-            Node node = new Node(opsCosts[0][i], -1);
-            minCosts[0][i] = node;
+            Node node = new Node(opsCosts[i][0], -1);
+            minCosts[i][0] = node;
         }
 
         // loop over the months
@@ -60,9 +60,9 @@ public class Main {
                 // loop over cities to find the min cost to operate in that city in that month
                 minCost = Integer.MAX_VALUE;
                 for(int k = 0; k < numCities; k++){
-                    opsCost = opsCosts[i][j];
+                    opsCost = opsCosts[j][i];
                     relocCost = relocCosts[j][k];
-                    prevCost = minCosts[i-1][k].minCost;
+                    prevCost = minCosts[k][i-1].minCost;
                     sumCost = opsCost + relocCost + prevCost;
                     if(sumCost < minCost){
                         minCost = sumCost;
@@ -78,20 +78,21 @@ public class Main {
 
     private static void generateTraceBack(Node[][] minCosts, int[] cityPath) {
     	finalMinCost = Integer.MAX_VALUE;
-    	int nextParentCity = -1;
+    	int minCity = -1;
     	for(int i = 0; i < numCities; i++) {
     		if(minCosts[i][numMonths-1].minCost < finalMinCost) {
     			finalMinCost = minCosts[i][numMonths-1].minCost; 
-    			nextParentCity = i;
+    			minCity = i;
     		}
     	}
     	
-    	for(int j = numMonths - 1; j > 0; j--) {
-    		cityPath[j] = nextParentCity;
-    		nextParentCity = minCosts[nextParentCity][j-1].parentCity;
-    	}
+    	cityPath[numMonths-1] = minCity; 
     	
-    	cityPath[0] = nextParentCity;
+    	int nextParentCity = minCosts[minCity][numMonths-1].parentCity;
+    	for(int j = numMonths - 2; j > 0; j--) {
+    		cityPath[j] = nextParentCity;
+    		nextParentCity = minCosts[nextParentCity][j].parentCity;
+    	}
     }
 
     private static void importCityData(String txtFile) {
@@ -105,7 +106,7 @@ public class Main {
             numMonths = Integer.parseInt(scanner.next());
 
             // set up the storage data structures
-            opsCosts = new int[numMonths][numCities];
+            opsCosts = new int[numCities][numMonths];
             cityNames = new String[numCities];
 
             for (int i = 0; i < numCities; i++) {
@@ -114,10 +115,9 @@ public class Main {
 
                 for (int j = 0; j < numMonths; j++) {
                     // load the operation costs for city i in month j
-                    opsCosts[j][i] = Integer.parseInt(scanner.next());
+                    opsCosts[i][j] = Integer.parseInt(scanner.next());
                 }
             }
-            System.out.println("City Data Imported...");
         } catch (FileNotFoundException fe) {
             System.err.println(fe.getMessage());
             System.err.println(fe.getCause());
@@ -158,6 +158,7 @@ public class Main {
     		path = path + cityNames[city] + " ";
     	}
     	
+    	System.out.println(finalMinCost);
     	System.out.println(path);
     }
 
